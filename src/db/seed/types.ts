@@ -1,0 +1,22 @@
+export type SeedProduct = {
+  slug: string;
+  name: string;
+  reference: string | null;
+  shortDescription: string;
+  description: string;
+  price: string;
+  oldPrice: string | null;
+  categoryId: number;
+  brandId: number;
+  image: string | null;
+  stock: number;
+  rating: string;
+  reviewsCount: number;
+  badge: string | null;
+  discount: number;
+  isNew: boolean;
+  isPromo: boolean;
+  isBestSeller: boolean;
+  isFlash: boolean;
+  i18n: { en: { name: string; shortDescription: string; description: string; badge?: string } };
+};

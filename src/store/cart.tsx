@@ -1,6 +1,13 @@
 "use client";
 
 import React, { createContext, useContext, useEffect, useMemo, useState } from "react";
+import { useI18n } from "@/i18n/AppProvider";
+
+const CART_KEY = "tripo-cart";
+const FAV_KEY = "tripo-fav";
+// Anciennes clés (avant le renommage en TRIPO-TECH), lues une seule fois pour ne pas perdre le panier.
+const LEGACY_CART_KEY = "matek-cart";
+const LEGACY_FAV_KEY = "matek-fav";
 
 export type CartItem = {
   id: number;
@@ -36,12 +43,13 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [toast, setToast] = useState<string | null>(null);
   const [favorites, setFavorites] = useState<number[]>([]);
   const [loaded, setLoaded] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     try {
-      const raw = localStorage.getItem("matek-cart");
+      const raw = localStorage.getItem(CART_KEY) ?? localStorage.getItem(LEGACY_CART_KEY);
       if (raw) setItems(JSON.parse(raw));
-      const fav = localStorage.getItem("matek-fav");
+      const fav = localStorage.getItem(FAV_KEY) ?? localStorage.getItem(LEGACY_FAV_KEY);
       if (fav) setFavorites(JSON.parse(fav));
     } catch {}
     setLoaded(true);
@@ -49,12 +57,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (!loaded) return;
-    localStorage.setItem("matek-cart", JSON.stringify(items));
+    localStorage.setItem(CART_KEY, JSON.stringify(items));
+    localStorage.removeItem(LEGACY_CART_KEY);
   }, [items, loaded]);
 
   useEffect(() => {
     if (!loaded) return;
-    localStorage.setItem("matek-fav", JSON.stringify(favorites));
+    localStorage.setItem(FAV_KEY, JSON.stringify(favorites));
+    localStorage.removeItem(LEGACY_FAV_KEY);
   }, [favorites, loaded]);
 
   useEffect(() => {
@@ -71,7 +81,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
       return [...prev, { ...item, qty }];
     });
-    setToast(`${item.name} ajouté au panier`);
+    setToast(t("common.addedToCart", { name: item.name }));
   };
 
   const removeItem = (id: number) => setItems((prev) => prev.filter((p) => p.id !== id));

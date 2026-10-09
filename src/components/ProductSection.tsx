@@ -3,13 +3,14 @@ import { useRef, useEffect } from "react";
 import Link from "next/link";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import ProductCard, { Product } from "./ProductCard";
+import { useI18n } from "@/i18n/AppProvider";
 
 export default function ProductSection({
   title,
   subtitle,
   products,
   link,
-  linkLabel = "Voir tout",
+  linkLabel,
   dark = false,
 }: {
   title: string;
@@ -19,6 +20,7 @@ export default function ProductSection({
   linkLabel?: string;
   dark?: boolean;
 }) {
+  const { t } = useI18n();
   const scroller = useRef<HTMLDivElement>(null);
   const sectionRef = useRef<HTMLDivElement>(null);
 
@@ -34,10 +36,12 @@ export default function ProductSection({
     return () => obs.disconnect();
   }, []);
 
+  /** Défilement dans le sens de lecture : "précédent" revient vers le début de la liste. */
   const scrollBy = (dir: number) => {
     const el = scroller.current;
     if (!el) return;
-    el.scrollBy({ left: dir * (el.clientWidth * 0.8), behavior: "smooth" });
+    const rtl = document.documentElement.dir === "rtl";
+    el.scrollBy({ left: (rtl ? -dir : dir) * (el.clientWidth * 0.8), behavior: "smooth" });
   };
 
   if (!products.length) return null;
@@ -53,13 +57,13 @@ export default function ProductSection({
             {subtitle && <p className={`text-[12px] ${dark ? "text-white/70" : "text-gray-500"}`}>{subtitle}</p>}
           </div>
           <div className="flex items-center gap-2">
-            <Link href={link} className="hidden sm:inline-block text-[13px] font-bold text-[#e30613] hover:underline mr-1">
-              {linkLabel} →
+            <Link href={link} className="hidden sm:inline-block text-[13px] font-bold text-[#e30613] hover:underline me-1">
+              {linkLabel ?? t("common.seeAll")}
             </Link>
-            <button onClick={() => scrollBy(-1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] transition" aria-label="Précédent">
+            <button type="button" onClick={() => scrollBy(-1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] transition" aria-label={t("common.prev")}>
               <ChevronLeft size={18} />
             </button>
-            <button onClick={() => scrollBy(1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] transition" aria-label="Suivant">
+            <button type="button" onClick={() => scrollBy(1)} className="w-8 h-8 rounded-full border border-gray-300 flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] transition" aria-label={t("common.next")}>
               <ChevronRight size={18} />
             </button>
           </div>
