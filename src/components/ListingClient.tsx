@@ -1,0 +1,161 @@
+"use client";
+import { useEffect, useState } from "react";
+import ProductCard, { Product } from "./ProductCard";
+import { SlidersHorizontal, ChevronDown, ChevronLeft, ChevronRight, LayoutGrid } from "lucide-react";
+
+export default function ListingClient({
+  categorySlug,
+  initialSearch,
+  initialBrand,
+  initialFlag,
+  title,
+}: {
+  categorySlug?: string;
+  initialSearch?: string;
+  initialBrand?: string;
+  initialFlag?: string;
+  title: string;
+}) {
+  const [products, setProducts] = useState<Product[]>([]);
+  const [total, setTotal] = useState(0);
+  const [page, setPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [sort, setSort] = useState("new");
+  const [loading, setLoading] = useState(true);
+  const [search, setSearch] = useState(initialSearch || "");
+  const [showSort, setShowSort] = useState(false);
+
+  const sorts = [
+    { v: "new", l: "Nouveautés" },
+    { v: "price-asc", l: "Prix croissant" },
+    { v: "price-desc", l: "Prix décroissant" },
+    { v: "promo", l: "Plus grosses remises" },
+  ];
+
+  useEffect(() => {
+    setSearch(initialSearch || "");
+    setPage(1);
+  }, [initialSearch, categorySlug, initialBrand, initialFlag]);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      setLoading(true);
+      try {
+        const params = new URLSearchParams();
+        if (search) params.set("search", search);
+        if (categorySlug) params.set("categorie", categorySlug);
+        if (initialBrand) params.set("marque", initialBrand);
+        if (initialFlag) params.set("flag", initialFlag);
+        params.set("sort", sort);
+        params.set("page", String(page));
+        params.set("limit", "24");
+        const r = await fetch(`/api/products?${params.toString()}`);
+        const j = await r.json();
+        setProducts(j.products || []);
+        setTotal(j.total || 0);
+        setTotalPages(j.totalPages || 1);
+      } catch {}
+      setLoading(false);
+    };
+    fetchData();
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  }, [search, categorySlug, initialBrand, initialFlag, sort, page]);
+
+  return (
+    <div className="mx-auto max-w-[1280px] px-4 mt-4">
+      {/* breadcrumb */}
+      <div className="text-[12px] text-gray-500 flex items-center gap-1.5 mb-2">
+        <a href="/" className="hover:text-[#e30613]">Accueil</a>
+        <span>/</span>
+        <span className="font-semibold text-gray-800">{title}</span>
+        <span className="ml-2 bg-gray-200 rounded-full px-2 py-[1px] text-[11px] font-bold">{total} produits</span>
+      </div>
+
+      <div className="bg-white border border-gray-200 rounded-t-[4px]">
+        <div className="section-bar flex flex-wrap items-center justify-between gap-2 px-4 py-3 border-b border-gray-200">
+          <h1 className="text-[18px] sm:text-[20px] font-black uppercase">{title}</h1>
+          <div className="flex items-center gap-2">
+            <div className="relative">
+              <button onClick={() => setShowSort((v) => !v)} className="flex items-center gap-2 border rounded px-3 py-2 text-[13px] font-medium hover:border-[#e30613] transition">
+                <SlidersHorizontal size={15} />
+                {sorts.find((s) => s.v === sort)?.l}
+                <ChevronDown size={14} />
+              </button>
+              {showSort && (
+                <div className="drop-down absolute right-0 top-[42px] w-[200px] bg-white border rounded shadow-xl z-20 overflow-hidden">
+                  {sorts.map((s) => (
+                    <button
+                      key={s.v}
+                      onClick={() => { setSort(s.v); setShowSort(false); setPage(1); }}
+                      className={`w-full text-left px-4 py-2.5 text-[13px] hover:bg-gray-50 ${sort === s.v ? "text-[#e30613] font-bold bg-red-50/50" : ""}`}
+                    >
+                      {s.l}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
+            {Array.from({ length: 8 }).map((_, i) => (
+              <div key={i} className="border rounded overflow-hidden">
+                <div className="shimmer aspect-square" />
+                <div className="p-3 space-y-2">
+                  <div className="shimmer h-3 rounded" />
+                  <div className="shimmer h-3 rounded w-2/3" />
+                  <div className="shimmer h-5 rounded w-1/2" />
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : products.length === 0 ? (
+          <div className="text-center py-16">
+            <LayoutGrid size={48} className="mx-auto text-gray-200" />
+            <p className="mt-3 font-bold text-gray-600">Aucun produit trouvé</p>
+            <p className="text-[13px] text-gray-400">Essayez un autre mot-clé ou rayon</p>
+          </div>
+        ) : (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 p-3">
+            {products.map((p) => (
+              <ProductCard key={p.id} product={p} />
+            ))}
+          </div>
+        )}
+
+        {totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 py-5 border-t">
+            <button
+              disabled={page <= 1}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] disabled:opacity-40 transition"
+            >
+              <ChevronLeft size={18} />
+            </button>
+            {Array.from({ length: Math.min(totalPages, 7) }).map((_, i) => {
+              const n = i + 1;
+              return (
+                <button
+                  key={n}
+                  onClick={() => setPage(n)}
+                  className={`w-9 h-9 rounded-full text-[13px] font-bold transition ${n === page ? "bg-[#e30613] text-white" : "border hover:border-[#e30613] hover:text-[#e30613]"}`}
+                >
+                  {n}
+                </button>
+              );
+            })}
+            <button
+              disabled={page >= totalPages}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="w-9 h-9 rounded-full border flex items-center justify-center hover:bg-[#e30613] hover:text-white hover:border-[#e30613] disabled:opacity-40 transition"
+            >
+              <ChevronRight size={18} />
+            </button>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}

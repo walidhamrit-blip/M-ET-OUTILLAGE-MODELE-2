@@ -1,0 +1,392 @@
+@import "tailwindcss";
+
+@theme {
+  --color-mytek-navy: #2f3d4c;
+  --color-mytek-navy-dark: #243140;
+  --color-mytek-red: #e30613;
+  --color-mytek-red-dark: #b3050f;
+  --color-mytek-yellow: #ffea00;
+  --color-mytek-grey: #f4f4f4;
+  --color-mytek-border: #e5e5e5;
+  --font-sans: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: #f4f4f4;
+  color: #222;
+  font-family: "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* ===== MYTEK-style header ===== */
+.topbar-link:hover {
+  color: #ffea00;
+}
+
+/* ===== Mega menu animation (like Mytek) ===== */
+@keyframes megaSlideDown {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.mega-animate {
+  animation: megaSlideDown 0.22s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.fade-animate {
+  animation: fadeIn 0.25s ease-out;
+}
+
+/* ===== Hero slider animations ===== */
+@keyframes heroZoom {
+  from {
+    transform: scale(1.06);
+  }
+  to {
+    transform: scale(1);
+  }
+}
+.hero-zoom {
+  animation: heroZoom 5.5s ease-out forwards;
+}
+
+@keyframes heroTextUp {
+  from {
+    opacity: 0;
+    transform: translateY(28px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+.hero-text-up {
+  animation: heroTextUp 0.7s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.hero-text-up-d1 {
+  animation-delay: 0.1s;
+}
+.hero-text-up-d2 {
+  animation-delay: 0.22s;
+}
+.hero-text-up-d3 {
+  animation-delay: 0.34s;
+}
+
+@keyframes slideInRight {
+  from {
+    opacity: 0;
+    transform: translateX(60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+@keyframes slideInLeft {
+  from {
+    opacity: 0;
+    transform: translateX(-60px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+.slide-in-right {
+  animation: slideInRight 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+.slide-in-left {
+  animation: slideInLeft 0.55s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* ===== Marquee red banner ===== */
+@keyframes marqueeX {
+  0% {
+    transform: translateX(0);
+  }
+  100% {
+    transform: translateX(-50%);
+  }
+}
+.marquee-track {
+  animation: marqueeX 22s linear infinite;
+}
+.marquee-track:hover {
+  animation-play-state: paused;
+}
+
+@keyframes blinkGlow {
+  0%,
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.4);
+  }
+  50% {
+    transform: scale(1.04);
+    box-shadow: 0 0 18px 2px rgba(0, 0, 0, 0.45);
+  }
+}
+.blink-glow {
+  animation: blinkGlow 1.6s ease-in-out infinite;
+}
+
+@keyframes yellowFlash {
+  0%,
+  100% {
+    background-color: #ffea00;
+  }
+  50% {
+    background-color: #fff59b;
+  }
+}
+
+/* ===== Product cards (Mytek style) ===== */
+.product-card {
+  transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.product-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 12px 30px rgba(0, 0, 0, 0.14);
+  z-index: 5;
+}
+.product-card .p-img {
+  transition: transform 0.4s ease;
+}
+.product-card:hover .p-img {
+  transform: scale(1.07);
+}
+.product-card .quick-actions {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: all 0.28s ease;
+}
+.product-card:hover .quick-actions {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Category circle hover */
+.cat-circle {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+.cat-circle:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 24px rgba(227, 6, 19, 0.18);
+  border-color: #e30613 !important;
+}
+.cat-circle:hover .cat-label {
+  color: #e30613;
+}
+
+/* Rayons sidebar item */
+.rayon-item {
+  transition: background 0.15s ease, padding-left 0.15s ease;
+}
+.rayon-item:hover {
+  background: #f4f4f4;
+  padding-left: 1.35rem;
+}
+.rayon-item:hover .rayon-name {
+  color: #e30613;
+  font-weight: 600;
+}
+
+/* Nav links */
+.nav-link {
+  position: relative;
+  transition: color 0.2s ease, background 0.2s ease;
+}
+.nav-link::after {
+  content: "";
+  position: absolute;
+  left: 12px;
+  right: 12px;
+  bottom: 6px;
+  height: 2px;
+  background: #e30613;
+  transform: scaleX(0);
+  transition: transform 0.25s ease;
+  transform-origin: left;
+}
+.nav-link:hover::after {
+  transform: scaleX(1);
+}
+.nav-link:hover {
+  color: #e30613;
+}
+
+/* Horizontal scroll carousels */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+/* Drawer */
+@keyframes drawerIn {
+  from {
+    transform: translateX(100%);
+  }
+  to {
+    transform: translateX(0);
+  }
+}
+.drawer-in {
+  animation: drawerIn 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+@keyframes overlayIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.overlay-in {
+  animation: overlayIn 0.25s ease both;
+}
+
+/* Countdown flip */
+@keyframes pulseRed {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(227, 6, 19, 0.5);
+  }
+  50% {
+    box-shadow: 0 0 0 8px rgba(227, 6, 19, 0);
+  }
+}
+.pulse-red {
+  animation: pulseRed 1.8s ease-out infinite;
+}
+
+/* Reveal on scroll */
+.reveal {
+  opacity: 0;
+  transform: translateY(26px);
+  transition: opacity 0.6s ease, transform 0.6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+.reveal.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Price tag ribbon */
+.ribbon-promo {
+  clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%, 8px 50%);
+}
+
+/* Toast */
+@keyframes toastUp {
+  from {
+    opacity: 0;
+    transform: translateY(16px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+.toast-up {
+  animation: toastUp 0.3s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+/* Back to top */
+@keyframes bounceSoft {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-5px);
+  }
+}
+.bounce-soft {
+  animation: bounceSoft 2s ease-in-out infinite;
+}
+
+/* Skeleton shimmer */
+@keyframes shimmer {
+  0% {
+    background-position: -400px 0;
+  }
+  100% {
+    background-position: 400px 0;
+  }
+}
+.shimmer {
+  background: linear-gradient(90deg, #eee 25%, #ddd 37%, #eee 63%);
+  background-size: 800px 100%;
+  animation: shimmer 1.4s ease infinite;
+}
+
+/* Search suggestions dropdown */
+@keyframes dropDown {
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scaleY(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scaleY(1);
+  }
+}
+.drop-down {
+  animation: dropDown 0.2s ease-out;
+  transform-origin: top;
+}
+
+/* Brand logo hover */
+.brand-logo {
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s;
+  filter: grayscale(35%);
+}
+.brand-logo:hover {
+  transform: translateY(-3px) scale(1.03);
+  filter: grayscale(0%);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+  border-color: #e30613 !important;
+}
+
+/* Section title bar like Mytek */
+.section-bar {
+  position: relative;
+}
+.section-bar::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -1px;
+  width: 220px;
+  height: 3px;
+  background: #e30613;
+}
+
+/* Custom scrollbar for mega menu */
+.thin-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+.thin-scroll::-webkit-scrollbar-thumb {
+  background: #e30613;
+  border-radius: 4px;
+}
