@@ -8,7 +8,23 @@ import {
   timestamp,
   numeric,
   jsonb,
+  customType,
 } from "drizzle-orm/pg-core";
+
+/**
+ * Convention de traduction
+ * ------------------------
+ * Les colonnes "de base" (name, description, address, ...) contiennent la langue
+ * principale : l'arabe. La colonne `i18n` contient les traductions anglaises sous
+ * la forme `{ en: { <champ>: valeur } }`. Un champ vide retombe sur l'arabe.
+ */
+export type I18nOverrides<T> = { en?: Partial<T> };
+
+const bytea = customType<{ data: Buffer; driverData: Buffer }>({
+  dataType() {
+    return "bytea";
+  },
+});
 
 export const categories = pgTable("categories", {
   id: serial("id").primaryKey(),
@@ -20,6 +36,8 @@ export const categories = pgTable("categories", {
   order: integer("order").default(0),
   featured: boolean("featured").default(false),
   productCount: integer("product_count").default(0),
+  subcategories: jsonb("subcategories").$type<string[]>().default([]),
+  i18n: jsonb("i18n").$type<I18nOverrides<{ name: string; subcategories: string[] }>>(),
 });
 
 export const brands = pgTable("brands", {
@@ -27,8 +45,17 @@ export const brands = pgTable("brands", {
   name: varchar("name", { length: 120 }).notNull(),
   slug: varchar("slug", { length: 120 }).notNull().unique(),
   logo: text("logo"),
+  color: varchar("color", { length: 20 }).default("#2f3d4c"),
   featured: boolean("featured").default(false),
 });
+
+export type ProductI18n = {
+  name: string;
+  shortDescription: string;
+  description: string;
+  badge: string;
+  specs: Record<string, string>;
+};
 
 export const products = pgTable("products", {
   id: serial("id").primaryKey(),
@@ -53,8 +80,11 @@ export const products = pgTable("products", {
   isBestSeller: boolean("is_best_seller").default(false),
   isFlash: boolean("is_flash").default(false),
   specs: jsonb("specs").$type<Record<string, string>>(),
+  i18n: jsonb("i18n").$type<I18nOverrides<ProductI18n>>(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+export type SlideI18n = { title: string; subtitle: string };
 
 export const slides = pgTable("slides", {
   id: serial("id").primaryKey(),
@@ -66,7 +96,10 @@ export const slides = pgTable("slides", {
   bgColor: varchar("bg_color", { length: 20 }),
   order: integer("order").default(0),
   active: boolean("active").default(true),
+  i18n: jsonb("i18n").$type<I18nOverrides<SlideI18n>>(),
 });
+
+export type StoreI18n = { address: string; hours: string; tag: string; city: string };
 
 export const stores = pgTable("stores", {
   id: serial("id").primaryKey(),
@@ -77,6 +110,10 @@ export const stores = pgTable("stores", {
   hours: varchar("hours", { length: 120 }),
   lat: numeric("lat", { precision: 10, scale: 6 }),
   lng: numeric("lng", { precision: 10, scale: 6 }),
+  image: text("image"),
+  tag: varchar("tag", { length: 80 }),
+  order: integer("order").default(0),
+  i18n: jsonb("i18n").$type<I18nOverrides<StoreI18n>>(),
 });
 
 export const orders = pgTable("orders", {
@@ -109,5 +146,30 @@ export const orderItems = pgTable("order_items", {
 export const newsletter = pgTable("newsletter", {
   id: serial("id").primaryKey(),
   email: varchar("email", { length: 150 }).notNull().unique(),
+  createdAt: timestamp("created_at").defaultNow(),
+});
+
+/** Surcharges des textes de l'interface (seules les valeurs modifiées sont stockées). */
+export const uiTexts = pgTable("ui_texts", {
+  key: varchar("key", { length: 160 }).primaryKey(),
+  ar: text("ar"),
+  en: text("en"),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Paramètres du site (entreprise, livraison, accueil...), une ligne par clé. */
+export const settings = pgTable("settings", {
+  key: varchar("key", { length: 80 }).primaryKey(),
+  value: jsonb("value").notNull(),
+  updatedAt: timestamp("updated_at").defaultNow(),
+});
+
+/** Images téléversées depuis l'administration. */
+export const media = pgTable("media", {
+  id: serial("id").primaryKey(),
+  filename: varchar("filename", { length: 255 }).notNull(),
+  mime: varchar("mime", { length: 60 }).notNull(),
+  size: integer("size").notNull(),
+  data: bytea("data").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
