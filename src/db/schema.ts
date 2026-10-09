@@ -173,3 +173,17 @@ export const media = pgTable("media", {
   data: bytea("data").notNull(),
   createdAt: timestamp("created_at").defaultNow(),
 });
+
+/** Demandes envoyées depuis le formulaire de contact ou la demande de devis entreprise. */
+export const inquiries = pgTable("inquiries", {
+  id: serial("id").primaryKey(),
+  kind: varchar("kind", { length: 20 }).notNull().default("contact"),
+  fullName: varchar("full_name", { length: 150 }).notNull(),
+  company: varchar("company", { length: 150 }),
+  phone: varchar("phone", { length: 40 }).notNull(),
+  email: varchar("email", { length: 150 }),
+  subject: varchar("subject", { length: 120 }),
+  message: text("message").notNull(),
+  handled: boolean("handled").notNull().default(false),
+  createdAt: timestamp("created_at").defaultNow(),
+});

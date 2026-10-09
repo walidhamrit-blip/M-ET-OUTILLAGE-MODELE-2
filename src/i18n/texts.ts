@@ -34,6 +34,11 @@ export const DEFAULT_TEXTS = {
   "form.password": ["Formulaires", "كلمة المرور *", "Password *"],
   "form.message": ["Formulaires", "رسالتك...", "Your message..."],
   "form.other": ["Formulaires", "أخرى", "Other"],
+  "form.sending": ["Formulaires", "جارٍ الإرسال…", "Sending…"],
+  "form.required": ["Formulaires", "يرجى ملء الحقول المطلوبة (*) بشكل صحيح.", "Please fill in the required fields (*) correctly."],
+  "form.sent": ["Formulaires", "شكراً! استلمنا رسالتك وسنرد عليك خلال ساعتين عمل.", "Thank you! We received your message and will reply within 2 business hours."],
+  "form.quoteSent": ["Formulaires", "شكراً! استلمنا طلبك وسنرسل إليك عرض السعر خلال ساعتين عمل.", "Thank you! We received your request and will send your quote within 2 business hours."],
+  "form.sendError": ["Formulaires", "تعذّر الإرسال، حاول مرة أخرى.", "Could not send, please try again."],
 
   // ---------- Villes ----------
   "city.tripoli": ["Villes", "طرابلس", "Tripoli"],

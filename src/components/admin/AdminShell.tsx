@@ -2,7 +2,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
-  LayoutDashboard, Languages, SlidersHorizontal, Images, Layers, Package, BadgeCheck, Store, ShoppingBag, Mail, LogOut, ExternalLink,
+  LayoutDashboard, Languages, SlidersHorizontal, Images, Layers, Package, BadgeCheck, Store, ShoppingBag, Mail, Inbox, LogOut, ExternalLink,
 } from "lucide-react";
 import { ThemeToggle } from "@/components/Prefs";
 
@@ -16,6 +16,7 @@ const NAV = [
   { href: "/admin/marques", label: "Marques", icon: BadgeCheck },
   { href: "/admin/magasins", label: "Magasins", icon: Store },
   { href: "/admin/commandes", label: "Commandes", icon: ShoppingBag },
+  { href: "/admin/demandes", label: "Demandes", icon: Inbox },
   { href: "/admin/newsletter", label: "Newsletter", icon: Mail },
 ];
 
