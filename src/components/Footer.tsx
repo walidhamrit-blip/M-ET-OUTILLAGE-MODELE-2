@@ -2,6 +2,7 @@
 import { useState } from "react";
 import Link from "next/link";
 import { MapPin, Phone, Mail, Clock, Send, CreditCard, Truck, ShieldCheck, ChevronUp, Share2, AtSign, Play } from "lucide-react";
+import NukhbaBadge from "@/components/NukhbaBadge";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -119,6 +120,12 @@ export default function Footer() {
               <span className="flex items-center gap-1.5"><CreditCard size={15} /> Paiement à la livraison</span>
               <span className="flex items-center gap-1.5"><Truck size={15} /> Livraison 24/72h</span>
               <span className="flex items-center gap-1.5"><ShieldCheck size={15} /> Garantie officielle</span>
+            </div>
+          </div>
+          {/* Crédit de réalisation — badge officiel « Website by Nukhba » */}
+          <div className="border-t border-white/10">
+            <div className="mx-auto max-w-[1280px] px-4 py-4 flex justify-center">
+              <NukhbaBadge />
             </div>
           </div>
         </div>
